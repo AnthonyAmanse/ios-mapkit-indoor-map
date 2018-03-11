@@ -200,6 +200,18 @@ import MapKit
         return MKPolygon(points: &coordinates, count: coordinates.count)
     }
     
+    func HeatMapPolygonFromCustomPDFPath(_ pdfPath: [CGPoint], value: Int? = nil, identifier: String) -> HeatMapPolygon {
+        var coordinates = pdfPath.map { pathPoint in
+            return coordinateConverter.MKMapPointFromPDFPoint(pathPoint)
+        }
+        
+        let heatMapPolygon = HeatMapPolygon(points: &coordinates, count: coordinates.count)
+        heatMapPolygon.identifier = identifier
+        heatMapPolygon.numberOfTriggers = value
+        
+        return heatMapPolygon
+    }
+    
     /**
      Create an MKCircle overlay given a custom CGPoint (whose coordinates
      are specified in the PDF points)

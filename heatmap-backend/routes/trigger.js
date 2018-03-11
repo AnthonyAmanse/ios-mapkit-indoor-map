@@ -27,6 +27,16 @@ router.get("/", function(req, res) {
   });
 });
 
+router.get("/delete", function(req, res) {
+  Triggers.remove({}, function(err) {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send("Removed all trigger events");
+    }
+  });
+});
+
 router.get("/total", function(req, res) {
   Triggers.find(function(err, triggers) {
     if (err) {

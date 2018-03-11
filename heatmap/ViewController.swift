@@ -30,6 +30,8 @@ struct Event: Codable {
 
 struct EventZones: Codable {
     let beacons: [Zone]
+    let x: Double
+    let y: Double
 }
 
 struct Zone: Codable {
@@ -39,10 +41,28 @@ struct Zone: Codable {
     let zone: Int
     let beaconid: String
     let color: String
-    let x: Int
-    let y: Int
-    let width: Int
-    let height: Int
+    let x: Double
+    let y: Double
+    let width: Double
+    let height: Double
+}
+
+struct Triggers: Codable {
+    let zone_one: Int
+    let zone_two: Int
+    let zone_three: Int
+    let zone_four: Int
+    let zone_five: Int
+    let zone_six: Int
+    let zone_seven: Int
+    let zone_eight: Int
+    let zone_nine: Int
+    let zone_ten: Int
+    let zone_eleven: Int
+    let zone_twelve: Int
+    let zone_thirteen: Int
+    let zone_fourteen: Int
+    let zone_fifteen: Int
 }
 
 /**
@@ -102,6 +122,25 @@ class ViewController: UIViewController, MKMapViewDelegate {
     
     var minimumTriggers: Int?
     var maximumTriggers: Int?
+    var triggersData: Triggers?
+    
+    var timer = Timer()
+    
+    @IBAction func displayHeatMap(_ sender: UISwitch) {
+        if sender.isOn {
+            self.getTriggersData()
+            scheduledTimerWithTimeInterval()
+        } else {
+            DispatchQueue.main.async {
+                for overlay in self.mapView!.overlays {
+                    if overlay.isKind(of: HeatMapPolygon.self) == true {
+                        self.mapView.remove(overlay)
+                    }
+                }
+            }
+            timer.invalidate()
+        }
+    }
     
     /// Call this to reset the camera.
     @IBAction func resetCamera(_ sender: AnyObject) {
@@ -112,53 +151,50 @@ class ViewController: UIViewController, MKMapViewDelegate {
      When the trashcan hasn't yet been pressed, this toggles the debug
      visuals. Otherwise, this toggles the floorplan.
      */
-    @IBAction func toggleDebugVisuals(_ sender: AnyObject) {
-        if (sender.isKind(of: UISwitch.classForCoder())) {
-            let senderSwitch: UISwitch = sender as! UISwitch
-            /*
-             If we have revealed the mapkit tileset (i.e. the trash icon was
-             pressed), toggle the floorplan display off.
-             */
-            if (mapKitTilesetRevealed == true) {
-                if (senderSwitch.isOn == true) {
-                    showFloorplan()
-                } else {
-                    hideFloorplan()
-                }
-            } else {
-                if (senderSwitch.isOn == true) {
-                    showDebugVisuals()
-                } else {
-                    hideDebugVisuals()
-                }
-            }
-        }
-    }
+//    @IBAction func toggleDebugVisuals(_ sender: AnyObject) {
+//        if (sender.isKind(of: UISwitch.classForCoder())) {
+//            let senderSwitch: UISwitch = sender as! UISwitch
+//            /*
+//             If we have revealed the mapkit tileset (i.e. the trash icon was
+//             pressed), toggle the floorplan display off.
+//             */
+//            if (mapKitTilesetRevealed == true) {
+//                if (senderSwitch.isOn == true) {
+//                    showFloorplan()
+//                } else {
+//                    hideFloorplan()
+//                }
+//            } else {
+//                if (senderSwitch.isOn == true) {
+//                    showDebugVisuals()
+//                } else {
+//                    hideDebugVisuals()
+//                }
+//            }
+//        }
+//    }
     
     /**
      Remove all the overlays except for the debug visuals. Forces the debug
      visuals switch off.
      */
-    @IBAction func revealMapKitTileset(_ sender: AnyObject) {
-        mapView.removeOverlays(mapView.overlays)
-        mapView.removeAnnotations(mapView.annotations)
-        // Show labels for restaurants, schools, etc.
-        mapView.showsPointsOfInterest = true
-        // Show building outlines.
-        mapView.showsBuildings = true
-        mapKitTilesetRevealed = true
-        // Set switch to off.
-        debugVisualsSwitch.setOn(false, animated: true)
-        showDebugVisuals()
-    }
+//    @IBAction func revealMapKitTileset(_ sender: AnyObject) {
+//        mapView.removeOverlays(mapView.overlays)
+//        mapView.removeAnnotations(mapView.annotations)
+//        // Show labels for restaurants, schools, etc.
+//        mapView.showsPointsOfInterest = true
+//        // Show building outlines.
+//        mapView.showsBuildings = true
+//        mapKitTilesetRevealed = true
+//        // Set switch to off.
+//        debugVisualsSwitch.setOn(false, animated: true)
+//        showDebugVisuals()
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         locationManager = CLLocationManager()
-        
-        // === Configure our floorplan.
-        
         
         /*
          By default, we listen to the scroll & zoom events to make sure that
@@ -167,8 +203,9 @@ class ViewController: UIViewController, MKMapViewDelegate {
          behavior, comment out the following line.
          */
         
-        self.getEventData(getZones: false)
         snapMapViewToFloorplan = true
+        
+        self.getEventData(getZones: false)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -182,6 +219,16 @@ class ViewController: UIViewController, MKMapViewDelegate {
         //mapView.mapType = MKMapTypeStandard
     }
     
+    func scheduledTimerWithTimeInterval(){
+        // Scheduling timer to Call the function "updateCounting" with the interval of 1 seconds
+        timer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(self.updateHeatMap), userInfo: nil, repeats: true)
+    }
+    
+    @objc func updateHeatMap(){
+        print("Requesting trigger data and keep applying heat map")
+        self.getTriggersData()
+    }
+    
     private func setupIndoorMap(_ anchorPair: GeoAnchorPair) {
         
         /*
@@ -190,7 +237,7 @@ class ViewController: UIViewController, MKMapViewDelegate {
          Note that these coordinates are given in PDF coordinates, but they
          will show up on just fine on MapKit in MapKit coordinates.
          */
-        let pdfTriangleRegionToHighlight = [CGPoint(x: 205.0, y: 335.3), CGPoint(x: 205.0, y: 367.3), CGPoint(x: 138.5, y: 367.3)]
+//        let pdfTriangleRegionToHighlight = [CGPoint(x: 205.0, y: 335.3), CGPoint(x: 205.0, y: 367.3), CGPoint(x: 138.5, y: 367.3)]
         
         // === Initialize our assets
         
@@ -227,36 +274,31 @@ class ViewController: UIViewController, MKMapViewDelegate {
          Highlight our region (originally specified in PDF coordinates) in
          yellow!
          */
-        let customHighlightRegion = floorplan0.polygonFromCustomPDFPath(pdfTriangleRegionToHighlight)
-        customHighlightRegion.title = "Hello World"
-        customHighlightRegion.subtitle = "This custom region will be highlighted in Yellow!"
+//        let customHighlightRegion = floorplan0.polygonFromCustomPDFPath(pdfTriangleRegionToHighlight)
+//        customHighlightRegion.title = "Hello World"
+//        customHighlightRegion.subtitle = "This custom region will be highlighted in Yellow!"
+//
+//        let customCircle = floorplan0.circleFromPDF(CGPoint(x: 100, y: 100), radius: 100)
+//        customCircle.title = "Hello World"
+//        customCircle.subtitle = "This custom region will be highlighted in Yellow!"
+//
+//        let customCircle2 = floorplan0.testCircle(CGPoint(x: 200, y: 200), radius: 100, identifier: "test")
+//        customCircle2.title = "Hello World"
+//        customCircle2.subtitle = "This custom region will be highlighted in Yellow!"
         
         
-        let customCircle = floorplan0.circleFromPDF(CGPoint(x: 100, y: 100), radius: 100)
-        customCircle.title = "Hello World"
-        customCircle.subtitle = "This custom region will be highlighted in Yellow!"
+//        let coordinateConverter: CoordinateConverter = CoordinateConverter(anchors: anchorPair)
         
-        let customCircle2 = floorplan0.testCircle(CGPoint(x: 200, y: 200), radius: 100, identifier: "test")
-        customCircle2.title = "Hello World"
-        customCircle2.subtitle = "This custom region will be highlighted in Yellow!"
+//        let newAnnotation = MKPointAnnotation()
+//        newAnnotation.title = "test"
+//        newAnnotation.subtitle = "This is pdf point 100,100"
+//        newAnnotation.coordinate = MKCoordinateForMapPoint(coordinateConverter.MKMapPointFromPDFPoint(CGPoint(x: 100, y: 100)))
         
-        
-        let coordinateConverter: CoordinateConverter = CoordinateConverter(anchors: anchorPair)
-        
-        let newAnnotation = MKPointAnnotation()
-        newAnnotation.title = "test"
-        newAnnotation.subtitle = "This is pdf point 100,100"
-        newAnnotation.coordinate = MKCoordinateForMapPoint(coordinateConverter.MKMapPointFromPDFPoint(CGPoint(x: 100, y: 100)))
         DispatchQueue.main.async {
             self.mapView.add(self.floorplan0)
             self.mapView.addAnnotations(self.debuggingAnnotations)
-            self.mapView!.add(customHighlightRegion)
-            self.mapView!.add(customCircle)
-            self.mapView!.add(customCircle2)
-            self.mapView.addAnnotation(newAnnotation)
             self.visibleMapRegionDelegate.mapViewResetCameraToFloorplan(self.mapView)
         }
-//        self.getEventData(getZones: true)
     }
     
     private func getEventData(getZones: Bool) {
@@ -276,11 +318,31 @@ class ViewController: UIViewController, MKMapViewDelegate {
             
             do {
                 if getZones {
-                    let eventZones = try JSONDecoder().decode(EventZones.self, from: data)
-                    print(eventZones)
                     
-                    for beacon in eventZones.beacons {
-                        print(beacon)
+                    // remove HeatMapPolygon overlays if existing
+                    let overlays: [MKOverlay] = self.mapView.overlays
+                    DispatchQueue.main.async {
+                        for overlay in overlays {
+                            if overlay.isKind(of: HeatMapPolygon.self) == true {
+                                self.mapView.remove(overlay)
+                            }
+                        }
+                    }
+                    
+                    
+                    let event = try JSONDecoder().decode(EventZones.self, from: data)
+                    
+                    let numberOfTriggers: Triggers = self.triggersData!
+                    let dict = try JSONDecoder().decode([String: Int].self, from: JSONEncoder().encode(numberOfTriggers))
+                    
+                    for beacon in event.beacons {
+                        let highlightZone = [CGPoint(x: beacon.x, y: event.y - beacon.y),CGPoint(x: beacon.x, y: event.y - beacon.y - beacon.width),CGPoint(x: beacon.x + beacon.width, y: event.y - beacon.y - beacon.width),CGPoint(x: beacon.x + beacon.width, y: event.y - beacon.y)]
+                        
+                        let customHighlightRegion = self.floorplan0.HeatMapPolygonFromCustomPDFPath(highlightZone, value: dict[beacon.key], identifier: beacon.key)
+                        
+                        DispatchQueue.main.async {
+                            self.mapView.add(customHighlightRegion)
+                        }
                     }
                 }
                 else {
@@ -300,6 +362,57 @@ class ViewController: UIViewController, MKMapViewDelegate {
                 print(jsonError)
             }
         }.resume()
+    }
+    
+    private func getTriggersData() {
+        let urlString = "https://heatmap-backend.mybluemix.net/triggers/total"
+        guard let url = URL(string: urlString) else {
+            print("url error")
+            return
+        }
+        
+        URLSession.shared.dataTask(with: url) { (data, response, error) in
+            if error != nil {
+                print(error!.localizedDescription)
+                print("No internet")
+            }
+            
+            guard let data = data else { return }
+            
+            do {
+                let triggers = try JSONDecoder().decode(Triggers.self, from: data)
+                
+                let dict = try JSONDecoder().decode([String: Int].self, from: JSONEncoder().encode(triggers))
+                let arrayOfValues = Array(dict.values)
+                
+                self.minimumTriggers = arrayOfValues.min()
+                self.maximumTriggers = arrayOfValues.max()
+                self.triggersData = triggers
+                
+                self.getEventData(getZones: true)
+                
+                
+            } catch let jsonError {
+                print(jsonError)
+            }
+        }.resume()
+    }
+    
+    private func getColor(_ numberOfTriggers: Int) -> UIColor {
+        
+        // normalize number of triggers from 0 to 1
+        var normalizedValue: CGFloat = CGFloat(numberOfTriggers - self.minimumTriggers!) / CGFloat(self.maximumTriggers! - self.minimumTriggers!)
+        if normalizedValue.isNaN {
+            normalizedValue = 0
+        }
+        // the heatmaps color would be from blue to red
+        let blue: CGFloat = 1 + (normalizedValue * -1.0)
+        let red:CGFloat = 0 + (normalizedValue * 1.0)
+        
+        // normalize alpha from 0.1 to 0.5
+        let alphaNormalized: CGFloat = (0.4 * (normalizedValue)) + 0.1
+        
+        return UIColor(red: red, green: 0, blue: blue, alpha: alphaNormalized)
     }
     
     /// Respond to CoreLocation updates
@@ -392,6 +505,14 @@ class ViewController: UIViewController, MKMapViewDelegate {
             return renderer
         }
         
+        if (overlay.isKind(of: HeatMapPolygon.self) == true) {
+            let polygon: HeatMapPolygon = overlay as! HeatMapPolygon
+            
+            let renderer = MKPolygonRenderer(polygon: polygon)
+            renderer.fillColor = self.getColor(polygon.numberOfTriggers!)
+            return renderer
+        }
+        
         if (overlay.isKind(of: MKPolygon.self) == true) {
             let polygon: MKPolygon = overlay as! MKPolygon
             
@@ -423,25 +544,25 @@ class ViewController: UIViewController, MKMapViewDelegate {
             }
         }
         
-        if (overlay.isKind(of: HeatMapCircle.self) == true) {
-            let circle: HeatMapCircle = overlay as! HeatMapCircle
-            
-            if (circle.identifier == "test") {
-                let renderer = MKCircleRenderer(circle: circle)
-                renderer.fillColor = UIColor.black.withAlphaComponent(0.5)
-                renderer.strokeColor = UIColor.white.withAlphaComponent(1.0)
-                renderer.lineWidth = 1.0
-                return renderer
-            }
-            
-            if (circle.title == "debug") {
-                let renderer = MKCircleRenderer(circle: circle)
-                renderer.fillColor = UIColor.gray.withAlphaComponent(0.1)
-                renderer.strokeColor = UIColor.cyan.withAlphaComponent(0.5)
-                renderer.lineWidth = 2.0
-                return renderer
-            }
-        }
+//        if (overlay.isKind(of: HeatMapCircle.self) == true) {
+//            let circle: HeatMapCircle = overlay as! HeatMapCircle
+//
+//            if (circle.identifier == "test") {
+//                let renderer = MKCircleRenderer(circle: circle)
+//                renderer.fillColor = UIColor.black.withAlphaComponent(0.5)
+//                renderer.strokeColor = UIColor.white.withAlphaComponent(1.0)
+//                renderer.lineWidth = 1.0
+//                return renderer
+//            }
+//
+//            if (circle.title == "debug") {
+//                let renderer = MKCircleRenderer(circle: circle)
+//                renderer.fillColor = UIColor.gray.withAlphaComponent(0.1)
+//                renderer.strokeColor = UIColor.cyan.withAlphaComponent(0.5)
+//                renderer.lineWidth = 2.0
+//                return renderer
+//            }
+//        }
         
         if (overlay.isKind(of: MKCircle.self) == true) {
             let circle: MKCircle = overlay as! MKCircle
