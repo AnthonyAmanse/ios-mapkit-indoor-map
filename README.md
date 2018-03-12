@@ -1,5 +1,5 @@
 # iOS Indoor Map View
-In this Code Pattern, we will create an indoor map using Apple's MapKit framework and a Cloud Foundry app for the iOS app's backend. The iOS app will be using the existing framework MapKit to display the map while the backend will used to generate a PDF file of an indoor map. The indoor map is a floor plan in the Think Conference's developer zone. With the use of a backend data that is separate to the iOS app, developers would not need to keep updating their iOS app if they want to modify their indoor map's PDF floor plan. This app extends the sample code in [Footprint: Indoor positioning](https://developer.apple.com/library/content/samplecode/footprint/Listings/Swift_README_md.html) from Apple.
+In this Code Pattern, we will create an indoor map using Apple's MapKit framework and a Cloud Foundry app for the iOS app's backend. The iOS app will use the existing framework MapKit to display the map while the Cloud Foundry app will generate a PDF file of an indoor map which is consumed by the iOS app. With the use of a backend data that is separate from the iOS app, developers would not need to keep updating their iOS app if they want to modify their indoor map's floor plan. This app extends the sample code in [Footprint: Indoor positioning](https://developer.apple.com/library/content/samplecode/footprint/Listings/Swift_README_md.html) from Apple.
 
 When the reader has completed this Code Pattern, they will understand how to:
 
@@ -9,7 +9,7 @@ When the reader has completed this Code Pattern, they will understand how to:
 * Make custom overlays with MapKit
 
 <!--Remember to dump an image in this path-->
-![](doc/source/images/architecture.png)
+![](docs/architecture.png)
 
 ## Flow
 <!--Add new flow steps based on the architecture diagram-->
@@ -19,15 +19,13 @@ When the reader has completed this Code Pattern, they will understand how to:
 4. Step 4.
 5. Step 5.
 
-<!--Update this section-->
 ## Included components
-Select components from [here](https://github.ibm.com/developer-journeys/journey-docs/tree/master/_content/dev#components), copy and paste the raw text for ease
+
 * [Cloud Foundry](http://cloudfoundry.org/): Build, deploy, and run applications on an open source cloud platform.
 * [Compose for MongoDB](https://console.bluemix.net/catalog/services/compose-for-mongodb): MongoDB with its powerful indexing and querying, aggregation and wide driver support, has become the go-to JSON data store for many startups and enterprises.
 
-<!--Update this section-->
 ## Featured technologies
-Select components from [here](https://github.ibm.com/developer-journeys/journey-docs/tree/master/_content/dev#technologies), copy and paste the raw text for ease
+
 * [Mobile](https://mobilefirstplatform.ibmcloud.com/): Systems of engagement are increasingly using mobile technology as the platform for delivery.
 * [Node.js](https://nodejs.org/): An open-source JavaScript run-time environment for executing server-side JavaScript code.
 
@@ -66,7 +64,7 @@ $ mongo --ssl --sslAllowInvalidCertificates <url> -u <user> -p <password> --auth
 
 ### 3. Deploy the Cloud Foundry app
 
-Go to `heatmap-backend` and push the app in Cloud Foundry in your account. After the app is pushed, you'll need to copy the app url which you will need after this step. The url will be formatted like `heatmap-backend-<random-name>.mybluemix.net`
+Go to `heatmap-backend` folder and push the app in Cloud Foundry in your account. After the app is pushed, you'll need to copy the app url which you will need after this step. The url will be formatted like `heatmap-backend-<random-name>.mybluemix.net`
 
 <pre>
 $ cd heatmap-backend
@@ -114,9 +112,10 @@ With custom overlays and the data from the backend, you could create a heatmap o
 <img src="docs/initial-heatmap.png" width="35%" height="35%">
 
 You'll see that the app will render some overlays above the indoor map. To update the data from the backend, use `random.js` to generate random data which should change colors of the overlay depending on the number of events from each zone. The overlays will update every 5 seconds when the toggle is on.
+> random.js is in the root directory of this repo
 
 ```
-$ export CF_APP_URL="heatmap-backend-unvillainous-washout.mybluemix.net"
+$ export CF_APP_URL="https://heatmap-backend-unvillainous-washout.mybluemix.net"
 $ node random.js
 
 Sending 6 number of events to zone: 8
