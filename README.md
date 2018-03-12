@@ -48,6 +48,7 @@ cd ios-mapkit-indoor-map
 ### 2. Create Compose for MongoDB
 
 Create Compose for MongoDB and name it `heatmap-compose-mongodb`:
+> It is important to have the Compose for Mongodb instance be named `heatmap-compose-mongodb` since the Cloud Foundry app will be binding to that instance name. If you have named it to a different one, modify the `heatmap-backend/manifest.yml` file.
 
 * [**Compose for MongoDB**](https://console.bluemix.net/catalog/services/compose-for-mongodb)
 
