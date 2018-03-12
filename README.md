@@ -109,7 +109,7 @@ let CF_APP_URL:String = "https://<b>heatmap-backend-unvillainous-washout.mybluem
 
 Once you have modified and saved the `ViewController.swift` to use your own backend, run the app using a simulator or your own iPhone.  
 You should see Apple Maps using the PDF from your backend as an indoor map.
-![iphone](docs/initial-view.png)
+<img src="docs/initial-view.png" width="35%" height="35%">
 
 The sample debugging annotations should show you the origin (0,0) of your pdf and the anchors. The anchors are there so that the MapView will know where to place the PDF. It needs the longitude and latitude of the location of the place of your indoor map. These data are in `real-data.js` which you have inserted in MongoDB.
 
