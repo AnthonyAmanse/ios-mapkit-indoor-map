@@ -1,10 +1,3 @@
-The README for a Code Pattern is very prescriptive, use the following template to get you started.
-
-<!--Put badges at the very top -->
-<!--change the repos -->
-<!--change the tracking number -->
-<!-- [![Build Status](https://travis-ci.org/IBM/watson-banking-chatbot.svg?branch=master)](https://travis-ci.org/IBM/watson-banking-chatbot) -->
-<!--Add a new Title and fill in the blanks -->
 # iOS Indoor Map View
 In this Code Pattern, we will create an indoor map using Apple's MapKit framework and a Cloud Foundry app for the iOS app's backend. The iOS app will be using the existing framework MapKit to display the map while the backend will used to generate a PDF file of an indoor map. The indoor map is a floor plan in the Think Conference's developer zone. With the use of a backend data that is separate to the iOS app, developers would not need to keep updating their iOS app if they want to modify their indoor map's PDF floor plan. This app extends the sample code in [Footprint: Indoor positioning](https://developer.apple.com/library/content/samplecode/footprint/Listings/Swift_README_md.html) from Apple.
 
