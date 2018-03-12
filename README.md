@@ -115,6 +115,7 @@ You'll see that the app will render some overlays above the indoor map. To updat
 
 ```
 $ export CF_APP_URL="https://heatmap-backend-unvillainous-washout.mybluemix.net"
+$ npm install
 $ node random.js
 
 Sending 6 number of events to zone: 8
