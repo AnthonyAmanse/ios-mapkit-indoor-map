@@ -8,16 +8,14 @@ When the reader has completed this Code Pattern, they will understand how to:
 * Integrate the iOS map to get data from the Cloud Foundry app
 * Make custom overlays with MapKit
 
-<!--Remember to dump an image in this path-->
 ![](docs/architecture.png)
 
 ## Flow
-<!--Add new flow steps based on the architecture diagram-->
-1. Step 1.
-2. Step 2.
-3. Step 3.
-4. Step 4.
-5. Step 5.
+
+1. The user opens the iOS application and can toggle the heatmap on or off. The user will also generate random data of events in the zones of the indoor map. This should update the colors of the heatmap.
+2. The iOS app sends requests to the backend through RESTful API.
+3. The backend retrieves or updates the documents in the database. The backend would also generate the PDF based on the data received.
+4. The database gets or updates the data based on the request from the server.
 
 ## Included components
 
@@ -125,6 +123,8 @@ Sending 9 number of events to zone: 1
 Sending 10 number of events to zone: 3
 ...
 ```
+
+In a real setting, the iOS app can be used to trigger these events.
 
 <img src="docs/heatmap-with-data.png" width="35%" height="35%">
 
