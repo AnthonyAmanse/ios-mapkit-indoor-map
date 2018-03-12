@@ -113,8 +113,10 @@ With custom overlays and the data from the backend, you could create a heatmap o
 You'll see that the app will render some overlays above the indoor map. To update the data from the backend, use `random.js` to generate random data which should change colors of the overlay depending on the number of events from each zone. The overlays will update every 5 seconds when the toggle is on.
 > random.js is in the root directory of this repo
 
-```
-$ export CF_APP_URL="https://heatmap-backend-unvillainous-washout.mybluemix.net"
+<pre>
+<b>Use the URL of your own Cloud Foundry app</b>
+
+$ export CF_APP_URL="<b>https://heatmap-backend-unvillainous-washout.mybluemix.net</b>"
 $ npm install
 $ node random.js
 
@@ -123,7 +125,7 @@ Sending 5 number of events to zone: 5
 Sending 9 number of events to zone: 1
 Sending 10 number of events to zone: 3
 ...
-```
+</pre>
 
 In a real setting, the iOS app can be used to trigger these events.
 
