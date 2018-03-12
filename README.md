@@ -60,7 +60,7 @@ Create Compose for MongoDB and name it `heatmap-compose-mongodb`:
 
 * [**Compose for MongoDB**](https://console.bluemix.net/catalog/services/compose-for-mongodb)
 
-After the provisioning is complete, you'll need to insert some documents in the database.  
+After the provisioning is complete, you'll need to insert some documents in the database.
 In the IBM Cloud Dashboard of the compose instance you just created, copy the Mongo command line connection string
 ![connection string](docs/mongo-command.png)
 
@@ -107,7 +107,7 @@ let CF_APP_URL:String = "https://<b>heatmap-backend-unvillainous-washout.mybluem
 
 ### 5. Run the iOS application
 
-Once you have modified and saved the `ViewController.swift` to use your own backend, run the app using a simulator or your own iPhone.  
+Once you have modified and saved the `ViewController.swift` to use your own backend, run the app using a simulator or your own iPhone.
 You should see Apple Maps using the PDF from your backend as an indoor map.
 <img src="docs/initial-view.png" width="35%" height="35%">
 
