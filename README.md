@@ -78,7 +78,8 @@ Go to `heatmap-backend` and push the app in Cloud Foundry in your account. After
 <pre>
 $ cd heatmap-backend
 $ bx cf push
-
+...
+...
 Showing health and status for app heatmap-backend in org Developer Advocacy / space dev as Anthony.Amanse@ibm.com...
 OK
 
