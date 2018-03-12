@@ -10,6 +10,8 @@ import CoreLocation
 import Foundation
 import MapKit
 
+let CF_APP_URL:String = "https://heatmap-backend-unvillainous-washout.mybluemix.net"
+
 struct Event: Codable {
     let eventId: String
     let eventName: String
@@ -247,7 +249,7 @@ class ViewController: UIViewController, MKMapViewDelegate {
          settings build phases.
          */
         
-        let pdfUrl = URL(string: "http://heatmap-backend.mybluemix.net/svg/think-dev-area.pdf")!
+        let pdfUrl = URL(string: CF_APP_URL.replacingOccurrences(of: "https://", with: "http://") + "/svg/think-dev-area.pdf")!
         
         floorplan0 = FloorplanOverlay(floorplanUrl: pdfUrl, withPDFBox: CGPDFBox.trimBox, andAnchors: anchorPair, forFloorLevel: 0)
         
@@ -302,7 +304,7 @@ class ViewController: UIViewController, MKMapViewDelegate {
     }
     
     private func getEventData(getZones: Bool) {
-        let urlString = "https://heatmap-backend.mybluemix.net/events/think-dev-area"
+        let urlString = CF_APP_URL + "/events/think-dev-area"
         guard let url = URL(string: urlString) else {
             print("url error")
             return
@@ -365,7 +367,7 @@ class ViewController: UIViewController, MKMapViewDelegate {
     }
     
     private func getTriggersData() {
-        let urlString = "https://heatmap-backend.mybluemix.net/triggers/total"
+        let urlString = CF_APP_URL + "/triggers/total"
         guard let url = URL(string: urlString) else {
             print("url error")
             return

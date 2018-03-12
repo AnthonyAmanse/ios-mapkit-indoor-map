@@ -18,10 +18,12 @@ const schema = {
 };
 
 prompt.start();
-console.log("==========")
-console.log("Enter zone number to populate and number of trigger eventsto be sent at that zone")
-console.log("Zones are from 1 - 9. Trigger events are from 0 - 99")
 function askUser() {
+
+  console.log("==========")
+  console.log("Enter zone number to populate and number of trigger eventsto be sent at that zone")
+  console.log("Zones are from 1 - 9. Trigger events are from 0 - 99")
+  console.log("Ctrl + D to exit.")
   prompt.get(schema, function (err, result) {
     //
     // Log the results.
@@ -53,7 +55,7 @@ function generateData(userInput, numberOfTriggers) {
   }
   
   let options = {
-    url: "http://heatmap-backend.mybluemix.net/triggers/add",
+    url: process.env.CF_APP_URL + "/triggers/add",
     method: "POST",
     body: JSON.stringify(input),
     headers: {
@@ -73,4 +75,11 @@ function generateData(userInput, numberOfTriggers) {
   }
 }
 
-askUser()
+if (process.env.CF_APP_URL) {
+  askUser()
+} else {
+  console.log("-------------------------")
+  console.log("Please set environment varialbe CF_APP_URL to the heatmap-backend you just deployed");
+  console.log("example:\nexport CF_APP_URL=https://heatmap-backend.mybluemix.net")
+  console.log("-------------------------")
+}

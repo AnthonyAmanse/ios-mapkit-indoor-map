@@ -1,7 +1,6 @@
 ---
 applications:
 - name: heatmap-backend
-  host: heatmap-backend
   random-route: true
   memory:  128M
   services:

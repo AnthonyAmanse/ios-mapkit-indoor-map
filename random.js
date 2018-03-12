@@ -15,7 +15,7 @@ function generateData() {
   }
   
   let options = {
-    url: "http://heatmap-backend.mybluemix.net/triggers/add",
+    url: process.env.CF_APP_URL + "/triggers/add",
     method: "POST",
     body: JSON.stringify(input),
     headers: {
@@ -35,4 +35,12 @@ function generateData() {
   }
 }
 
-setInterval(generateData, 1000)
+if (process.env.CF_APP_URL) {
+  setInterval(generateData, 1000)
+}
+else {
+  console.log("-------------------------")
+  console.log("Please set environment varialbe CF_APP_URL to the heatmap-backend you just deployed");
+  console.log("example:\nexport CF_APP_URL=https://heatmap-backend.mybluemix.net")
+  console.log("-------------------------")
+}
