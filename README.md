@@ -117,7 +117,7 @@ The sample debugging annotations should show you the origin (0,0) of your pdf an
 
 With custom overlays and the data from the backend, you could create a heatmap over your indoor map. You can turn on the heatmap using the toggle at the bottom right corner of the app.
 
-![initial heatmap](docs/initial-heatmap.png)
+<img src="docs/initial-heatmap.png" width="35%" height="35%">
 
 You'll see that the app will render some overlays above the indoor map. To update the data from the backend, use `random.js` to generate random data which should change colors of the overlay depending on the number of events from each zone. The overlays will update every 5 seconds when the toggle is on.
 
@@ -132,7 +132,7 @@ Sending 10 number of events to zone: 3
 ...
 ```
 
-![heatmap with data](docs/heatmap-with-data.png)
+<img src="docs/heatmap-with-data.png" width="35%" height="35%">
 
 # Links
 
